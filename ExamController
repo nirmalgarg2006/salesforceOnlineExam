@@ -1,0 +1,131 @@
+public class ExamController {
+
+    public string studentname{get;set;}
+    public string studentid{get;set;}
+    public List<Questions__c> lstQuestions{get;set;}
+    public Integer iquestionNumber{get;set;}
+    public Integer maximumquestions{get;set;}
+    Map<Integer, string> mapAnswers = new Map<Integer, string>();
+    private string sanswer;
+    public integer ans{get;set;}
+    
+    public string selectedanswer
+    {
+        get{
+            return sanswer;
+        }
+        set{
+            sanswer = value;
+            if(mapAnswers.containsKey(iquestionNumber))
+            {
+                mapAnswers.remove(iquestionNumber);
+                mapAnswers.put(iquestionNumber,sanswer);
+            }
+            else
+            {
+            mapAnswers.put(iquestionNumber,sanswer);
+            }
+            
+            //ans = ans + sanswer;
+            sanswer='';
+        }
+        
+    }
+    public ExamController()
+    {
+        //lstQuestions = new 
+        lstQuestions = [SELECT Id, Option_4__c, Correct_Answer_Option__c, Option_3__c, Option_1__c, Option_2__c, Q_No__c, Correct_Answer__c, Question__c FROM Questions__c ];
+        iquestionNumber = 0;
+        maximumquestions = lstQuestions.size();
+    }
+    
+    public PageReference startExam()
+    {
+        if(String.isEmpty(studentname))
+        {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter student name.'));
+            return null;
+        }
+        if(String.isEmpty(studentid))
+        {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Please enter student id.'));
+            return null;
+        }
+        Boolean isStudentExist = CheckForStudent();
+        if(!isStudentExist)
+        {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Student ' + studentname + ' is not registered.'));
+            return null;
+        }
+        else
+        {
+            PageReference p = new PageReference('/apex/QuetionsPage');
+            return p;
+        }
+        //return null;
+    }
+    
+    private Boolean CheckForStudent()
+    {
+        List<Students__c> lstStudent = [select id from students__c where name__c = : studentname and empid__c = : studentid];
+        if(lststudent.size() > 0)
+            return true;
+        return false;
+    }
+    
+    public Integer getQuestionNumber()
+    {
+        return iquestionNumber + 1;
+    }
+    
+    public string getQuestionText()
+    {
+        return lstQuestions.get(iquestionNumber).Question__c;
+    }
+    
+    public List<SelectOption> getItems()
+    {
+        List<SelectOption> options = new List<SelectOption>();
+ 	 	options.add(new SelectOption('Option 1',lstQuestions.get(iquestionNumber).Option_1__c));
+ 	 	options.add(new SelectOption('Option 2',lstQuestions.get(iquestionNumber).Option_2__c));
+ 	 	options.add(new SelectOption('Option 3',lstQuestions.get(iquestionNumber).Option_3__c));
+        options.add(new SelectOption('Option 4',lstQuestions.get(iquestionNumber).Option_4__c));
+ 	 	return options;
+    }
+    
+    public PageReference previous()
+    {
+        if(iquestionNumber == 0)
+            iquestionNumber = 0;
+        else 
+            iquestionNumber--;
+        return null;
+    }
+    
+    public PageReference next()
+    {
+        //mapAnswers.put(iquestionNumber, selectedanswer);
+        //selectedanswer='';
+        if(iquestionNumber == lstQuestions.size()-1)
+            iquestionNumber = lstQuestions.size()-1;
+        else
+            iquestionNumber++;
+        return null;
+    }
+    
+    public PageReference finish()
+    {
+        ans = 0;
+        for(integer k : mapAnswers.keySet())
+        {
+            string rightanswer = lstQuestions.get(k).Correct_Answer_Option__c;
+            string selectedanswer = mapAnswers.get(k);
+            if(rightanswer.equalsIgnoreCase(selectedanswer))
+            {
+                ans = ans + 10;
+            }
+        }
+        PageReference p = new PageReference('/apex/finishexam');
+        return p;
+    }
+}
