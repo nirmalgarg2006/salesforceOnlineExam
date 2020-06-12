@@ -1,0 +1,70 @@
+<apex:page controller="ExamController" >
+    <style>
+#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #266582;
+  color: white;
+}
+        
+</style>
+    <style>
+    .locationError { color: blue; font-weight: strong;}
+    .employeeError { color: green; font-weight: strong;}
+    </style>
+    <apex:messages />
+    <apex:form >
+                <apex:selectOption value="{!selectedanswer}">
+                        <apex:selectOptions value="{!items}"></apex:selectOptions>
+                    </apex:selectOption><br/>
+        <table id="customers" style="width:500px;">
+            <tr>
+                <th colspan="2">Login</th>
+            </tr>
+            <tr>
+                <td>
+                    <apex:outputText value="Student Name">
+                    </apex:outputText>
+                    
+                </td>
+                <td>
+                    <apex:inputText value="{!studentname}" id="txtStudentName"></apex:inputText>
+                   
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <apex:outputText value="Student Id">
+                    </apex:outputText>
+                    
+                </td>
+                <td>
+                    
+                    <apex:inputText value="{!studentid}" id="txtStudentId"></apex:inputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="align:right;">
+                    <apex:commandButton value="Start Exam" action="{!startExam}"/>
+                </td>
+            </tr>
+        </table>
+       
+    </apex:form>
+</apex:page>
