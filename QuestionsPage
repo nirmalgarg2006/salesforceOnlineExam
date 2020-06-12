@@ -1,0 +1,60 @@
+<apex:page controller="ExamController" >
+    <style>
+#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #266582;
+  color: white;
+}
+        
+</style>
+   
+    <apex:form >
+        <apex:outputPanel id="op1"> 
+        
+        <table id="customers">
+            <tr>
+                <th>Question Number : {!QuestionNumber}</th>
+            </tr>
+            <tr>
+                <td>
+                    Question : {!QuestionText}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   <apex:selectRadio value="{!selectedanswer}">
+       
+                       <apex:selectOptions value="{!items}"></apex:selectOptions> </apex:selectRadio> 
+        <br/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="align:right;">
+                    <apex:commandButton value="Previous" action="{!previous}" reRender="op1" rendered="{!if(iquestionNumber >= 1, true, false)}" />
+                    <apex:commandButton value="Next" action="{!next}" reRender="op1" rendered="{! if(iquestionNumber < maximumquestions-1, true, false)}"/>
+                    <apex:commandButton value="Finish" action="{!finish}"/>
+                </td>
+            </tr>
+        </table>
+            
+            </apex:outputPanel>
+        <apex:outputText value="{!ans}"></apex:outputText>
+    </apex:form>
+</apex:page>
